@@ -18,7 +18,7 @@ This can be useful for testing your jsonpatches: https://json-schema-validator.h
 2. Update the `CA_BUNDLE` for the webhook
 
     ~~~sh
-    deploy/updatecabundle.sh
+    deploy/updatecabundle.sh deploy/webhook.yaml
     ~~~
 3. Deploy the `MutatingWebhookConfiguration`
 
