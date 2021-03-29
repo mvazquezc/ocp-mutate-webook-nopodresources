@@ -53,23 +53,6 @@ func Mutate(body []byte, verbose bool) ([]byte, error) {
 		p := []map[string]string{}
 
 		for i := range pod.Spec.Containers {
-			// Only remove resources for non-guaranteed containers
-			containerName := pod.Spec.Containers[i].Name
-			containerCpuRequests := pod.Spec.Containers[i].Resources.Requests.Cpu().Value()
-			containerCpuLimits := pod.Spec.Containers[i].Resources.Limits.Cpu().Value()
-			containerMemoryRequests := pod.Spec.Containers[i].Resources.Requests.Memory().Value()
-			containerMemoryLimits := pod.Spec.Containers[i].Resources.Limits.Memory().Value()
-			log.Printf("Container %s, Requests: [CPU: %d, Memory: %d], Limits: [CPU: %d, Memory: %d]", containerName, containerCpuRequests, containerMemoryRequests, containerCpuLimits, containerMemoryLimits)
-			if ((containerCpuRequests + containerCpuLimits + containerMemoryRequests + containerMemoryLimits) == 0 ) {
-				log.Print("Container doesn't have resources defined. Skipping...")
-				continue
-			} else if ((containerCpuRequests == containerCpuLimits) && (containerMemoryRequests == containerMemoryLimits)) {
-				log.Print("Container is in the guaranteed QoS. Skipping...")
-				continue
-			} else {
-				log.Print("Removing resources requests and limits from container")
-			}
-
 			patch := map[string]string{
 				"op":    "remove",
 				"path":  fmt.Sprintf("/spec/containers/%d/resources", i),

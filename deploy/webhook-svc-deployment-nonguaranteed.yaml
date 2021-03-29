@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
         - name: mutator
-          image: quay.io/mavazque/mutatewebhooknopodresources:latest
+          image: quay.io/mavazque/mutatewebhooknopodresources:nonguaranteed
           imagePullPolicy: Always
           readinessProbe:
             httpGet:

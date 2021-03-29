@@ -12,9 +12,16 @@ This can be useful for testing your jsonpatches: https://json-schema-validator.h
 
 1. Deploy the webhook service
 
-    ~~~sh
-    oc create -f deploy/webhook-svc-deployment.yaml
-    ~~~
+    1. If you want the webhook to remove resources definition for every pod:
+    
+        ~~~sh
+        oc create -f deploy/webhook-svc-deployment-everything.yaml
+        ~~~
+    2. If you want the webhook to remove resources definitions only for non-guaranteed pods:
+
+        ~~~sh
+        oc create -f deploy/webhook-svc-deployment-nonguaranteed.yaml
+        ~~~
 2. Update the `CA_BUNDLE` for the webhook
 
     ~~~sh
@@ -31,4 +38,10 @@ This can be useful for testing your jsonpatches: https://json-schema-validator.h
 
     ~~~sh
     oc create -f deploy/test-app-deployment.yaml
+    ~~~
+
+    > **NOTE**: If you're running the non-guaranteed webhook then below command will get the resources removes.
+
+    ~~~sh
+    oc create -f deploy/test-app-deployment-burstable.yaml
     ~~~
