@@ -45,3 +45,9 @@ This can be useful for testing your jsonpatches: https://json-schema-validator.h
     ~~~sh
     oc create -f deploy/test-app-deployment-burstable.yaml
     ~~~
+
+    > **NOTE**: If the pod doesn't have any requests then no patch will be done
+
+    ~~~sh
+    oc create -f deploy/test-app-deployment-besteffort.yaml
+    ~~~

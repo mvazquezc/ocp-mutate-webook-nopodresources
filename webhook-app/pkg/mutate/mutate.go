@@ -15,7 +15,7 @@ import (
 // Mutate mutates
 func Mutate(body []byte, verbose bool) ([]byte, error) {
 	if verbose {
-		log.Printf("recv: %s\n", string(body)) // untested section
+		log.Printf("recv: %s\n", string(body))
 	}
 
 	// unmarshal request into AdmissionReview struct
@@ -61,13 +61,13 @@ func Mutate(body []byte, verbose bool) ([]byte, error) {
 			containerMemoryLimits := pod.Spec.Containers[i].Resources.Limits.Memory().Value()
 			log.Printf("Container %s, Requests: [CPU: %d, Memory: %d], Limits: [CPU: %d, Memory: %d]", containerName, containerCpuRequests, containerMemoryRequests, containerCpuLimits, containerMemoryLimits)
 			if ((containerCpuRequests + containerCpuLimits + containerMemoryRequests + containerMemoryLimits) == 0 ) {
-				log.Print("Container doesn't have resources defined. Skipping...")
+				log.Print("Container is in the BestEffort QoS. Skipping...")
 				continue
 			} else if ((containerCpuRequests == containerCpuLimits) && (containerMemoryRequests == containerMemoryLimits)) {
-				log.Print("Container is in the guaranteed QoS. Skipping...")
+				log.Print("Container is in the Guaranteed QoS. Skipping...")
 				continue
 			} else {
-				log.Print("Removing resources requests and limits from container")
+				log.Print("Container is in the Burstable QoS. Removing resources requests and limits from container.")
 			}
 
 			patch := map[string]string{
@@ -79,7 +79,7 @@ func Mutate(body []byte, verbose bool) ([]byte, error) {
 		// parse the []map into JSON
 		resp.Patch, err = json.Marshal(p)
 
-		// Success, of course ;)
+		// Success
 		resp.Result = &metav1.Status{
 			Status: "Success",
 		}
@@ -94,7 +94,7 @@ func Mutate(body []byte, verbose bool) ([]byte, error) {
 	}
 
 	if verbose {
-		log.Printf("resp: %s\n", string(responseBody)) // untested section
+		log.Printf("resp: %s\n", string(responseBody))
 	}
 
 	return responseBody, nil

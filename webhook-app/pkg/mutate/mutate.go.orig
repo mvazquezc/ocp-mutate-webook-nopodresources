@@ -15,7 +15,7 @@ import (
 // Mutate mutates
 func Mutate(body []byte, verbose bool) ([]byte, error) {
 	if verbose {
-		log.Printf("recv: %s\n", string(body)) // untested section
+		log.Printf("recv: %s\n", string(body))
 	}
 
 	// unmarshal request into AdmissionReview struct
@@ -62,7 +62,7 @@ func Mutate(body []byte, verbose bool) ([]byte, error) {
 		// parse the []map into JSON
 		resp.Patch, err = json.Marshal(p)
 
-		// Success, of course ;)
+		// Success
 		resp.Result = &metav1.Status{
 			Status: "Success",
 		}
@@ -77,7 +77,7 @@ func Mutate(body []byte, verbose bool) ([]byte, error) {
 	}
 
 	if verbose {
-		log.Printf("resp: %s\n", string(responseBody)) // untested section
+		log.Printf("resp: %s\n", string(responseBody))
 	}
 
 	return responseBody, nil
