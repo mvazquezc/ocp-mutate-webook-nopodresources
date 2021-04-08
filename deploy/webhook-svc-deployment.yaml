@@ -41,7 +41,7 @@ spec:
         app: wh-resources-from-pods
     spec:
       containers:
-        - name: mutator
+        - name: webhook
           image: quay.io/mavazque/mutatewebhooknopodresources:nonguaranteed
           imagePullPolicy: Always
           readinessProbe:

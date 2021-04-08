@@ -77,7 +77,7 @@ func Validate(body []byte, verbose bool) ([]byte, error) {
 		var nonValidContainers []string
 		for i := range validatedContainers {
 			for k, v := range validatedContainers[i] {
-				log.Print("Container: %s, valid: %b", k, v)	
+				log.Printf("Container: %s, valid: %t", k, v)	
 				if (v == false) {
 					nonValidContainers = append(nonValidContainers, k)
 				}
@@ -92,6 +92,7 @@ func Validate(body []byte, verbose bool) ([]byte, error) {
 			log.Print(statusMessage)
 			resp.Result = &metav1.Status{
 				Message: statusMessage,
+				Status: "Failure",
 			}
 		} else {
 			// Success
@@ -99,6 +100,7 @@ func Validate(body []byte, verbose bool) ([]byte, error) {
 			log.Print(statusMessage)
 			resp.Result = &metav1.Status{
 				Message: statusMessage,
+				Status: "Success",
 			}
 		}
 
