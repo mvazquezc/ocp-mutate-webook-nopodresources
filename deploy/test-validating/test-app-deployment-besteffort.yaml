@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    validatepodresources: "yes"
+  creationTimestamp: null
+  name: test-ns-validate
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: reversewords-besteffort
+  name: reversewords-besteffort
+  namespace: test-ns-validate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reversewords-besteffort
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: reversewords-besteffort
+    spec:
+      containers:
+      - image: quay.io/mavazque/trbsht:latest
+        name: reversewords-besteffort
+status: {}

@@ -12,42 +12,71 @@ This can be useful for testing your jsonpatches: https://json-schema-validator.h
 
 1. Deploy the webhook service
 
-    1. If you want the webhook to remove resources definition for every pod:
-    
+    ~~~sh
+    oc create -f deploy/webhook-svc-deployment.yaml
+    ~~~
+2. Update the `CA_BUNDLE` for the webhooks
+
+    ~~~sh
+    deploy/updatecabundle.sh deploy/mutatingwebhook.yaml
+    deploy/updatecabundle.sh deploy/validatingwebhook.yaml
+    ~~~
+3. Deploy the `MutatingWebhookConfiguration` and the `ValidatingWebhookConfiguration`:
+
+    ~~~sh
+    oc create -f deploy/mutatingwebhook.yaml -f deploy/validatingwebhook.yaml
+    ~~~
+4. Test the webhooks:
+
+    1. Mutation Webhook: 
+
+        > **NOTE**: As you can see the deployment have requests and limits set to same values, our mutator webhook will do nothing.
+
         ~~~sh
-        oc create -f deploy/webhook-svc-deployment-everything.yaml
+        oc create -f deploy/test-mutating/test-app-deployment.yaml
         ~~~
-    2. If you want the webhook to remove resources definitions only for non-guaranteed pods:
+
+        > **NOTE**: If the pod is Burstable (different requests and limits), our mutator webhook will request the removal of resources from pod.
 
         ~~~sh
-        oc create -f deploy/webhook-svc-deployment-nonguaranteed.yaml
+        oc create -f deploy/test-mutating/test-app-deployment-burstable.yaml
         ~~~
-2. Update the `CA_BUNDLE` for the webhook
+
+        > **NOTE**: If the pod doesn't have any requests then no patch will be done
+
+        ~~~sh
+        oc create -f deploy/test-mutating/test-app-deployment-besteffort.yaml
+        ~~~
+    2. Validation Webhook
+
+        > **NOTE**: As you can see the deployment have requests and limits set to same values, our validator will accept this request.
+
+        ~~~sh
+        oc create -f deploy/test-validating/test-app-deployment.yaml
+        ~~~
+
+        > **NOTE**: If the pod is Burstable (different requests and limits), our validator webhook will deny this request.
+
+        ~~~sh
+        oc create -f deploy/test-validating/test-app-deployment-burstable.yaml
+        ~~~
+
+        > **NOTE**: If the pod doesn't have any requests then the validator webhook will deny the request.
+
+        ~~~sh
+        oc create -f deploy/test-validating/test-app-deployment-besteffort.yaml
+        ~~~
+
+5. Clean everything:
 
     ~~~sh
-    deploy/updatecabundle.sh deploy/webhook.yaml
+    oc delete ns test-ns-mutate test-ns-validate
     ~~~
-3. Deploy the `MutatingWebhookConfiguration`
 
     ~~~sh
-    oc create -f deploy/webhook.yaml
-    ~~~
-4. Deploy the test `namespace` and `deployment`
-
-    > **NOTE**: As you can see the deployment has some requests and limits set, our mutator webhook will remove those.
-
-    ~~~sh
-    oc create -f deploy/test-app-deployment.yaml
+    oc delete -f deploy/webhook-svc-deployment.yaml 
     ~~~
 
-    > **NOTE**: If you're running the non-guaranteed webhook then below command will get the resources removes.
-
     ~~~sh
-    oc create -f deploy/test-app-deployment-burstable.yaml
-    ~~~
-
-    > **NOTE**: If the pod doesn't have any requests then no patch will be done
-
-    ~~~sh
-    oc create -f deploy/test-app-deployment-besteffort.yaml
+    oc delete -f deploy/mutatingwebhook.yaml -f deploy/validatingwebhook.yaml
     ~~~

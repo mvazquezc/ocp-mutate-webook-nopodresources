@@ -9,36 +9,36 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    service.alpha.openshift.io/serving-cert-secret-name: remove-resources-from-pods-serving-cert
-  name: remove-resources-from-pods
+    service.alpha.openshift.io/serving-cert-secret-name: wh-resources-from-pods-serving-cert
+  name: wh-resources-from-pods
   namespace: pod-res-wh
   labels:
-    app: remove-resources-from-pods
+    app: wh-resources-from-pods
 spec:
   ports:
     - port: 443
       targetPort: 8443
   selector:
-    app: remove-resources-from-pods
+    app: wh-resources-from-pods
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: remove-resources-from-pods
+  name: wh-resources-from-pods
   namespace: pod-res-wh
   labels:
-    app: remove-resources-from-pods
+    app: wh-resources-from-pods
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: remove-resources-from-pods
+      app: wh-resources-from-pods
   template:
     metadata:
-      name: remove-resources-from-pods
+      name: wh-resources-from-pods
       labels:
-        app: remove-resources-from-pods
+        app: wh-resources-from-pods
     spec:
       containers:
         - name: mutator
@@ -63,4 +63,4 @@ spec:
       - name: serving-cert
         secret:
           defaultMode: 420
-          secretName: remove-resources-from-pods-serving-cert
+          secretName: wh-resources-from-pods-serving-cert

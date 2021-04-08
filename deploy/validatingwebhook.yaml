@@ -1,0 +1,29 @@
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: wh-resources-from-pods
+  labels:
+    app: wh-resources-from-pods
+webhooks:
+  - name: wh-resources-from-pods.pod-res-wh.svc.cluster.local
+    admissionReviewVersions: ["v1", "v1beta1"]
+    clientConfig:
+      caBundle: changeme
+      service:
+        name: wh-resources-from-pods
+        namespace: pod-res-wh
+        path: "/validate"
+        port: 443
+    rules:
+      - operations: ["CREATE"]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    sideEffects: None
+    timeoutSeconds: 5
+    reinvocationPolicy: Never
+    failurePolicy: Ignore
+    namespaceSelector:
+      matchExpressions:
+        - {key: validatepodresources, operator: In, values: ["yes"]}

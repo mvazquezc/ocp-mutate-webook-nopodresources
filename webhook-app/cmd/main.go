@@ -9,6 +9,7 @@ import (
 	"time"
 
 	m "github.com/mvazquezc/k8s-mutate-webhook/pkg/mutate"
+	v "github.com/mvazquezc/k8s-mutate-webhook/pkg/validate"
 )
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {
@@ -37,6 +38,28 @@ func handleMutate(w http.ResponseWriter, r *http.Request) {
 	w.Write(mutated)
 }
 
+func handleValidate(w http.ResponseWriter, r *http.Request) {
+	// read the body / request
+	body, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+
+	if err != nil {
+		sendError(err, w)
+		return
+	}
+
+	// validate the request
+	validated, err := v.Validate(body, true)
+	if err != nil {
+		sendError(err, w)
+		return
+	}
+
+	// and write it back
+	w.WriteHeader(http.StatusOK)
+	w.Write(validated)
+}
+
 func sendError(err error, w http.ResponseWriter) {
 	log.Println(err)
 	w.WriteHeader(http.StatusInternalServerError)
@@ -50,6 +73,7 @@ func main() {
 
 	mux.HandleFunc("/", handleRoot)
 	mux.HandleFunc("/mutate", handleMutate)
+	mux.HandleFunc("/validate", handleValidate)
 
 	s := &http.Server{
 		Addr:           ":8443",

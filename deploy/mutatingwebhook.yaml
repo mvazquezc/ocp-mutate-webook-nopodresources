@@ -2,16 +2,16 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: remove-resources-from-pods
+  name: wh-resources-from-pods
   labels:
-    app: remove-resources-from-pods
+    app: wh-resources-from-pods
 webhooks:
-  - name: remove-resources-from-pods.pod-res-wh.svc.cluster.local
+  - name: wh-resources-from-pods.pod-res-wh.svc.cluster.local
     admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
       caBundle: changeme
       service:
-        name: remove-resources-from-pods
+        name: wh-resources-from-pods
         namespace: pod-res-wh
         path: "/mutate"
         port: 443

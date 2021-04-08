@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    validatepodresources: "yes"
+  creationTimestamp: null
+  name: test-ns-validate
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: reversewords
+  name: reversewords
+  namespace: test-ns-validate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reversewords
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: reversewords
+    spec:
+      containers:
+      - image: quay.io/mavazque/trbsht:latest
+        name: reversewords
+        resources: 
+          requests:
+            cpu: 20
+            memory: "500M"
+          limits:
+            cpu: 20
+            memory: "500M"
+status: {}

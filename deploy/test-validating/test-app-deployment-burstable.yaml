@@ -3,37 +3,37 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    removepodresources: "yes"
+    validatepodresources: "yes"
   creationTimestamp: null
-  name: test-ns
+  name: test-ns-validate
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: reversewords
-  name: reversewords
-  namespace: test-ns
+    app: reversewords-burstable
+  name: reversewords-burstable
+  namespace: test-ns-validate
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: reversewords
+      app: reversewords-burstable
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: reversewords
+        app: reversewords-burstable
     spec:
       containers:
       - image: quay.io/mavazque/trbsht:latest
-        name: reversewords
+        name: reversewords-burstable
         resources: 
           requests:
-            cpu: 20
-            memory: "500M"
+            cpu: 10
+            memory: "250M"
           limits:
             cpu: 20
             memory: "500M"
