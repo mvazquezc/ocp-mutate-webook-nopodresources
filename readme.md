@@ -8,6 +8,8 @@ More info here: https://medium.com/ovni/writing-a-very-basic-kubernetes-mutating
 
 This can be useful for testing your jsonpatches: https://json-schema-validator.herokuapp.com/jsonpatch.jsp
 
+Useful info: https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/
+
 ## Deploy the MutationWebhook on OpenShift
 
 1. Deploy the webhook service
